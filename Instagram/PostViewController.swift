@@ -7,16 +7,31 @@
 //
 
 import UIKit
+import Firebase
+import SVProgressHUD
 
 class PostViewController: UIViewController {
-
+    // imageSelectViewControllerでimageに画像が格納される
+    var image: UIImage!
+    
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var textField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // imageSelectViewControllerから受け取ったimageを設定する
+        imageView.image = image
     }
     
-
+    // 投稿ボタンタップ時
+    @IBAction func handlePostButton(_ sender: Any) {
+    }
+    
+    // キャンセルボタンタップ時
+    @IBAction func handleCancelButton(_ sender: Any) {
+    }
+    
     /*
     // MARK: - Navigation
 

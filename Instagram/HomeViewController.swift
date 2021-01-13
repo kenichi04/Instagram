@@ -35,8 +35,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewWillAppear(animated)
         print("DEBUG_PRINT: viewWillAppear")
         
+        // Firestoreから投稿データを読み込み、postArrayに格納する処理
         if Auth.auth().currentUser != nil {
-            // ログイン済み
+            // ログイン済みの場合、データの読み込み（監視）を開始する
             if listener == nil {
                 // listener未登録なら、登録してスナップショットを受信する
                 // データベースの参照場所と取得順序を指定したクエリの作成
@@ -81,13 +82,15 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! PostTableViewCell
         cell.setPostData(postArray[indexPath.row])
         
-        // セル内のボタンのアクションをソースコードで設定
+        // セル内のいいねボタンのアクションをソースコードで設定
         cell.likeButton.addTarget(self, action: #selector(handleButton(_:forEvent:)), for: .touchUpInside)
+        // コメントボタンのアクションを設定
+        cell.commentButton.addTarget(self, action: #selector(handleCommentButton(_:forEvent:)), for: .touchUpInside)
         
         return cell
     }
     
-    // セル内のボタンがタップされた時に呼ばれるメソッド
+    // セル内のいいねボタンがタップされた時に呼ばれるメソッド
     @objc func handleButton(_ sender: UIButton, forEvent event: UIEvent) {
         print("DEBUG_PRINT: likeボタンがタップされました。")
         
@@ -117,6 +120,30 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             let postRef = Firestore.firestore().collection(Const.PostPath).document(postData.id)
             postRef.updateData(["likes": updateValue])
         }
+    }
+    
+    // セル内のコメントボタンがタップされた時に呼ばれる
+    @objc func handleCommentButton(_ sender: UIButton, forEvent event: UIEvent) {
+        print("DEBUG_PRINT: commentボタンがタップされました。")
+        
+        // タップされたセルのインデックスを求める
+        let touch = event.allTouches?.first
+        // タッチした座標(tableView内の座標)を割り出す
+        let point = touch!.location(in: self.tableView)
+        // タッチした座標がtableView内のどのindexPath内になるかを取得
+        let indexPath = tableView.indexPathForRow(at: point)
+        
+        // 配列からタップされたインデックスのデータを取り出す
+        let postData = postArray[indexPath!.row]
+//        print(postData.caption)
+        
+        if let storyboard = storyboard {
+            let commentViewController = storyboard.instantiateViewController(identifier: "Comment") as! CommentViewController
+            commentViewController.postData = postData
+            present(commentViewController, animated: true, completion: nil)
+        }
+        
+
     }
 
 }

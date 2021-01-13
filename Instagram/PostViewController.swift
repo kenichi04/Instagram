@@ -29,18 +29,26 @@ class PostViewController: UIViewController {
         // 画像をjpeg形式に変換
         let imageData = image.jpegData(compressionQuality: 0.75)
         // 画像と投稿データの保存場所を定義
-        // Firestoreに保存する投稿データの保存場所
+        /* Firestoreに保存する投稿データの保存場所
+           Firestore.firestore()でインスタンス初期化
+           Cloudstoreはデータをドキュメントに保存.ドキュメントはコレクションに保存される
+        */
         let postRef = Firestore.firestore().collection(Const.PostPath).document()
-        // Storageに保存する画像の保存場所
+        /* Storageに保存する画像の保存場所
+           referenceメソッドで参照を作成（≒クラウド内のファイルへのポインタ）
+           既存の参照でchildメソッドを使い、ツリーの下位への参照を作成
+        */
         let imageRef = Storage.storage().reference().child(Const.ImagePath).child(postRef.documentID + ".jpg")
         
         // HUDで投稿処理中の表示を開始
         SVProgressHUD.show()
         // Storageに画像をアップロード
+        // ファイル形式を指定
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
+        
         // putdataメソッドは、アップロード完了すると呼び出されるクロージャを最終引数に指定
-        imageRef.putData(imageData!, metadata: metadata) { (metadatam, error) in
+        imageRef.putData(imageData!, metadata: metadata) { (metadata, error) in
             if error != nil {
                 // 画像のアップロード失敗
                 print(error!)
@@ -49,6 +57,7 @@ class PostViewController: UIViewController {
                 UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
                 return
             }
+            
             // Firestoreに投稿データを保存
             let name = Auth.auth().currentUser?.displayName
             //
@@ -69,7 +78,7 @@ class PostViewController: UIViewController {
     
     // キャンセルボタンタップ時
     @IBAction func handleCancelButton(_ sender: Any) {
-        // 加工画面に戻し、追加編集できるようにする
+        // ひとつ前の加工画面に戻し、追加編集できるようにする
         self.dismiss(animated: true, completion: nil)
     }
 

@@ -12,9 +12,11 @@ import FirebaseUI
 class PostTableViewCell: UITableViewCell {
     @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var commentButton: UIButton!
     @IBOutlet weak var likeLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var captionLabel: UILabel!
+    @IBOutlet weak var commentLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -33,12 +35,29 @@ class PostTableViewCell: UITableViewCell {
         // 画像ダウンロード中であることを示すインジケーターを表示（今回はグレー）
         postImageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
         let imageRef = Storage.storage().reference().child(Const.ImagePath).child(postData.id + ".jpg")
-        // 引数にCloudStorageの画像保存さ場所を指定することで、UIImageViewに表示）
+        // 引数にCloudStorageの画像保存場所を指定することで、UIImageViewに表示）
         // 一度ダウンロードした画像はローカルストレージにキャッシュされるため、２回目以降はキャッシュを使用して素早く表示される
         postImageView.sd_setImage(with: imageRef)
         
         // キャプションの表示
         self.captionLabel.text = "\(postData.name!) : \(postData.caption!)"
+        // コメントがある場合は追加する
+        if let comments: [[String:String]] = postData.comments {
+            if comments.isEmpty {
+                commentLabel.text = ""
+
+            } else {
+                commentLabel.text = ""
+                //  captionLabel.text! += "\n\nコメント\(comments.count)件"
+                for comment in comments {
+                    
+                    for (key, value)  in comment {
+                        commentLabel.text! += "\n\(value) (\(key))"
+                    }
+                }
+            }
+
+        }
         
         // 日時の表示
         self.dateLabel.text = ""

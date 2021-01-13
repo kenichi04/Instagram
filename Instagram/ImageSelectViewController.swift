@@ -62,6 +62,11 @@ class ImageSelectViewController: UIViewController, UIImagePickerControllerDelega
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         // imageSelectViewController画面を閉じてタブ画面に戻る
         // presentingViewControllerにはこのimageSelectViewControllerの遷移元（今回はtabBarController）が入っている
+        print("PRESENTINGVIEW---------------------------")
+        if let present = self.presentingViewController {
+            print(present)
+        }
+        
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
@@ -75,6 +80,12 @@ class ImageSelectViewController: UIViewController, UIImagePickerControllerDelega
     
     // CLImageEditorの編集がキャンセルされたときに呼ばれるメソッド
     func imageEditorDidCancel(_ editor: CLImageEditor!) {
+        
+        print("PRESENTINGVIEW------FROM Editor---------------------")
+        if let present = self.presentingViewController {
+            print(present)
+        }
+        
         // ImageSelectViewControllerを閉じてタブ画面に戻る
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }

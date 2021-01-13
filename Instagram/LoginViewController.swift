@@ -30,6 +30,9 @@ class LoginViewController: UIViewController {
                 return
             }
             
+            // HUDで処理中を表示
+            SVProgressHUD.show()
+            
             Auth.auth().signIn(withEmail: address, password: password) { authResult, error in
                 if let error = error {
                     print("DEBUG_PRINT: " + error.localizedDescription)
@@ -37,6 +40,9 @@ class LoginViewController: UIViewController {
                     return
                 }
                 print("DEBUG_PRINT: ログインに成功しました。")
+                
+                // HUDを消す
+                SVProgressHUD.dismiss()
                 
                 // 画面を閉じてタブ画面に戻る
                 self.dismiss(animated: true, completion: nil)
@@ -54,6 +60,9 @@ class LoginViewController: UIViewController {
                 SVProgressHUD.showError(withStatus: "必要項目を入力してください")
                 return
             }
+            
+            // HUDで処理中を表示
+            SVProgressHUD.show()
             
             // アドレスとパスワードでユーザー作成。作成に成功すると、自動的にログインする
             // createUserの仕様で、クロージャを呼び出す際の第一引数(authResult,認証結果情報)と第二引数 (error)が渡される
@@ -82,6 +91,9 @@ class LoginViewController: UIViewController {
                         }
                         print("DEBUG_PRINT: [displayName = \(user.displayName!)]の設定に成功しました。")
                         
+                        // HUDを削除
+                        SVProgressHUD.dismiss()
+                        
                         // 画面を閉じてタブ画面に戻る
                         self.dismiss(animated: true, completion: nil)
                     }
@@ -90,15 +102,4 @@ class LoginViewController: UIViewController {
         }
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

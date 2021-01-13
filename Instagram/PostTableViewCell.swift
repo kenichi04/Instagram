@@ -47,12 +47,11 @@ class PostTableViewCell: UITableViewCell {
                 commentLabel.text = ""
 
             } else {
-                commentLabel.text = ""
-                //  captionLabel.text! += "\n\nコメント\(comments.count)件"
+                commentLabel.text! = "< コメント\(comments.count)件 >"
                 for comment in comments {
                     
                     for (key, value)  in comment {
-                        commentLabel.text! += "\n\(value) (\(key))"
+                        commentLabel.text! += "\n  (\(key)) \(value)"
                     }
                 }
             }
